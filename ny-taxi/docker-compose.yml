@@ -1,0 +1,50 @@
+services:
+  postgres:
+    image: postgres:15.1
+    container_name: ny_taxi_postgresql
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - ny_taxi_postgres_data:/var/lib/postgresql/data/pgdata
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: ny_taxi_pgadmin
+    ports:
+      - "8080:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    volumes:
+      - ny_taxi_pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+
+  jupyterlab:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ny_taxi_jupyterlab
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebooks:/home/jovyan/work
+    environment:
+      JUPYTER_ENABLE_LAB: "yes"
+      NB_USER: ${NB_USER}
+      NB_UID: ${NB_UID}
+      NB_GID: ${NB_GID}
+      CHOWN_HOME: "yes"
+      CHOWN_HOME_OPTS: "-R"
+    command: >
+      start-notebook.sh --NotebookApp.token='' --NotebookApp.password=''
+
+volumes:
+  ny_taxi_postgres_data:
+  ny_taxi_pgadmin_data:
+
