@@ -249,3 +249,7 @@ logs/
 Thumbs.db
 *.swp
 *.swo
+###########################
+# datatalks club specific
+notebooks/
+###########################

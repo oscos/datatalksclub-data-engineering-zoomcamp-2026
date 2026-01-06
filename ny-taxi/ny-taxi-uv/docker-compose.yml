@@ -1,6 +1,7 @@
 services:
+  # PostgreSQL database service
   postgres:
-    image: postgres:15.1
+    image: postgres:16
     container_name: ny_taxi_postgresql
     ports:
       - "5432:5432"
@@ -8,10 +9,10 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-      PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
-      - ny_taxi_postgres_data:/var/lib/postgresql/data/pgdata
+      - ny_taxi_postgres_data:/var/lib/postgresql/data
 
+  # pgAdmin service
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: ny_taxi_pgadmin
@@ -20,30 +21,30 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
-    volumes:
-      - ny_taxi_pgadmin_data:/var/lib/pgadmin
     depends_on:
       - postgres
-
-  jupyterlab:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: ny_taxi_jupyterlab
-    ports:
-      - "8888:8888"
     volumes:
-      - ./notebooks:/home/jovyan/work
-    environment:
-      JUPYTER_ENABLE_LAB: "yes"
-      NB_USER: ${NB_USER}
-      NB_UID: ${NB_UID}
-      NB_GID: ${NB_GID}
-      CHOWN_HOME: "yes"
-      CHOWN_HOME_OPTS: "-R"
-    command: >
-      start-notebook.sh --NotebookApp.token='' --NotebookApp.password=''
+      - ny_taxi_pgadmin_data:/var/lib/pgadmin
 
+  # Application container (for running ingestion scripts, notebooks, etc.)
+  app:
+    build: .
+    container_name: ny_taxi_app
+    depends_on:
+      - postgres
+    volumes:
+      # Mount project folder for live code editing
+      - .:/app
+      # Use container-managed venv
+      - /app/.venv
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    # ports:
+    #   - "8888:8888"  # for Jupyter if needed
+
+# Named volumes for persistence
 volumes:
   ny_taxi_postgres_data:
   ny_taxi_pgadmin_data:
