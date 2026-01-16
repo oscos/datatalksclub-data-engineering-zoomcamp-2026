@@ -234,6 +234,7 @@ docker-compose.override.yml
 *.tfstate.*
 terraform.tfvars
 *.tfvars
+# .terraform.lock.hcl
 
 ############################
 # dbt (if/when you get there)
