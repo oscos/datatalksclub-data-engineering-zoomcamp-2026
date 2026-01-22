@@ -1,0 +1,12 @@
+# Example only — do not commit real values.
+# Copy this file to terraform.tfvars and customize.
+
+# cp terraform.tfvars.example terraform.tfvars
+
+project_id = "dezc2026"
+
+gcs_bucket_name   = "dezc2026-data-lake"
+gcs_storage_class = "STANDARD"
+
+bq_dataset_name = "dezc2026_warehouse"
+
