@@ -1,0 +1,51 @@
+services:
+  # PostgreSQL database service
+  postgres:
+    image: postgres:16
+    container_name: ny_taxi_postgresql
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - ny_taxi_postgres_data:/var/lib/postgresql/data
+
+  # pgAdmin service
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: ny_taxi_pgadmin
+    ports:
+      - "8080:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    depends_on:
+      - postgres
+    volumes:
+      - ny_taxi_pgadmin_data:/var/lib/pgadmin
+
+  # Application container (for running ingestion scripts, notebooks, etc.)
+  app:
+    build: .
+    container_name: ny_taxi_app
+    depends_on:
+      - postgres
+    volumes:
+      # Mount project folder for live code editing
+      - .:/app
+      # Use container-managed venv
+      - /app/.venv
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    # ports:
+    #   - "8888:8888"  # for Jupyter if needed
+
+# Named volumes for persistence
+volumes:
+  ny_taxi_postgres_data:
+  ny_taxi_pgadmin_data:
+

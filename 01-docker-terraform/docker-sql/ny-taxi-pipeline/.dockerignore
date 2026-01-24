@@ -1,0 +1,21 @@
+# Ignore local venvs
+.venv
+__pycache__
+*.pyc
+*.pyo
+
+# Ignore Jupyter checkpoints
+.notebooks/.ipynb_checkpoints
+
+# Ignore local Docker config / system files
+.dockerignore
+Dockerfile
+docker-compose.override.yml
+
+# Git files
+.git
+.gitignore
+
+# OS junk
+*.swp
+*.DS_Store
