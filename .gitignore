@@ -145,6 +145,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+!.env.example
 
 # Spyder project settings
 .spyderproject
@@ -232,8 +233,8 @@ docker-compose.override.yml
 .terraform/
 *.tfstate
 *.tfstate.*
-terraform.tfvars
-*.tfvars
+*.tfvars*
+!*.tfvars.example
 # .terraform.lock.hcl
 
 ############################
