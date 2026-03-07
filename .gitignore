@@ -253,5 +253,5 @@ Thumbs.db
 *.swo
 ###########################
 # datatalks club specific
-notebooks/
+# notebooks/  # Uncomment to ignore notebooks (recommended for production repos)
 ###########################
