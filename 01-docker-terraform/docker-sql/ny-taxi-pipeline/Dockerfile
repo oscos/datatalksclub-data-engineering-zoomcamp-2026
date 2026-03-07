@@ -13,14 +13,17 @@ COPY pyproject.toml uv.lock ./
 
 # 2. Install dependencies into the virtual environment
 # --no-install-project skips installing the current project code at this stage
-RUN uv sync --locked --no-install-project
+# --group dev added since Jupyter is listed in my pyproject.toml dev dependency group, 
+# and uv sync (by default) installs only the main dependencies, not dev groups.
+RUN uv sync --locked --no-install-project --group dev
+RUN uv 
 
 # 3. Copy the rest of the application code
 # Since this changes often, we put it near the end
 COPY . .
 
 # 4. Final sync to ensure the project itself is installed (if needed)
-RUN uv sync --locked
+RUN uv sync --locked --group dev
 
 # Always use the project venv
 ENV PATH="/app/.venv/bin:$PATH"
